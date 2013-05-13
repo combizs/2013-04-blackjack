@@ -18,11 +18,10 @@ class window.Hand extends Backbone.Collection
     , 0
     if hasAce
       newScore = [score, score + 10]
-      if newScore[1] <= 21 then [score+10] else [score]
+      if newScore[1] <= 21 then [score+=10] else [score]
     return [score]
-  stand: ->
-
-  dealer: =>
-    @models[0].flip()
-    while @scores() < 17
-      @hit()
+  stand: =>
+    if @isDealer
+      @models[0].flip()
+      while @scores() < 17
+        @hit()
