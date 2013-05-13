@@ -16,4 +16,13 @@ class window.Hand extends Backbone.Collection
     score = @reduce (score, card) ->
       score + if card.get 'revealed' then card.get 'value' else 0
     , 0
-    if hasAce then [score, score + 10] else [score]
+    if hasAce
+      newScore = [score, score + 10]
+      if newScore[1] <= 21 then [score+10] else [score]
+    return [score]
+  stand: ->
+
+  dealer: =>
+    @models[0].flip()
+    while @scores() < 17
+      @hit()
