@@ -1,44 +1,40 @@
 #todo: refactor to have a game beneath the outer blackjack model
 class window.App extends Backbone.Model
-
   initialize: ->
     deck = new Deck()
+    @set 'playerHand', deck.dealPlayer()
+    @set 'dealerHand', deck.dealDealer()
     @startGame(deck)
+  startGame: (deck)->
+    @set 'deck', deck
     @get('playerHand').on('bust', ->
-      alert('Player bust')
-      @endGame('Dealer')
+      @endGame('Dealer', 'wins')
     , this)
     @get('dealerHand').on('bust', ->
-      alert('Dealer bust')
-      @endGame('Player')
+      @endGame('Player', 'wins')
     , this)
     @get('dealerHand').on('compareScore', ->
       @compareScore()
     , this)
-  startGame: (deck)->
-    @set 'deck', deck
-    @set 'playerHand', deck.dealPlayer()
-    @set 'dealerHand', deck.dealDealer()
     @checkScore('dealerHand')
     @checkScore('playerHand')
-
   winner: ->
   checkScore: (whom)->
     if @get(whom).scores() == 21
-      @endGame(whom)
+      @endGame(whom, 'blackjack')
   compareScore: =>
     player = @get 'playerHand'
     dealer = @get 'dealerHand'
     deck = @get 'deck'
     if player.scores() <= 21 and player.scores() > dealer.scores()
-      @endGame('Player')
+      @endGame('Player', 'wins')
     if dealer.scores() <= 21 and player.scores() < dealer.scores()
-      @endGame('Dealer')
+      @endGame('Dealer', 'wins')
     if player.scores() == dealer.scores()
+      @endGame('Push', 'nobody wins' )
       @startGame(deck)
-      alert 'Push! brah'
-  endGame: (whom)->
+  endGame: (whom, action)->
     hiddenCard = @get('dealerHand').models[0]
     if !hiddenCard.attributes.revealed
       hiddenCard.flip()
-    alert whom + ' won!'
+    alert whom + " " + action + "!"

@@ -12,9 +12,12 @@ class window.AppView extends Backbone.View
       $('.hit-button, .stand-button').attr 'disabled', 'disabled'
       @model.get('playerHand').stand()
       @model.get('dealerHand').stand()
-    "click .reset-button": =>
-      @startGame()
-
+    "click .reset-button": ->
+      @model.set('playerHand', @model.get('playerHand').deck.dealPlayer())
+      @model.set('dealerHand', @model.get('dealerHand').deck.dealDealer())
+      @model.startGame()
+      # console.log @model.attributes.deck
+      @render()
   initialize: ->
     @render()
 
