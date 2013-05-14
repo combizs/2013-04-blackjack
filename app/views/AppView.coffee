@@ -9,9 +9,11 @@ class window.AppView extends Backbone.View
   events:
     "click .hit-button": -> @model.get('playerHand').hit()
     "click .stand-button": ->
+      $('.hit-button, .stand-button').attr 'disabled', 'disabled'
       @model.get('playerHand').stand()
       @model.get('dealerHand').stand()
-    "click. reset-button": -> @render()
+    "click .reset-button": =>
+      @startGame()
 
   initialize: ->
     @render()
